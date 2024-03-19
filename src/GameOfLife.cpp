@@ -50,9 +50,9 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Game of Life");
 
-	window.setFramerateLimit(10);
+	window.setFramerateLimit(16);
 
-	int count = 150;
+	int count = 300;
 	std::vector<std::vector<bool>> grid(count, std::vector<bool>(count, false));
 	for (int i = 0; i < 20; ++i)
 	{
