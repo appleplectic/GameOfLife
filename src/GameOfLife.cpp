@@ -1,10 +1,10 @@
 ﻿#include <SFML/Graphics.hpp>
 
-#include <deque>
+#include <vector>
 #include <random>
 
 
-bool get_val_or_false(const std::deque<std::deque<bool>>& p_grid, const int index_y, const int index_x)
+bool get_val_or_false(const std::vector<std::vector<bool>>& p_grid, const int index_y, const int index_x)
 {
 	// assume p_grid sizes are the same
 	if ((index_y >= 0) && (index_x >= 0) && (index_y < static_cast<int>(p_grid.size())) && (index_x < static_cast<int>(p_grid[0].size())))
@@ -25,16 +25,16 @@ bool random_bool() {
 }
 
 
-static std::deque<std::deque<bool>> get_middle_subgrid(const std::deque<std::deque<bool>>& g_grid, const int width, const int height)
+static std::vector<std::vector<bool>> get_middle_subgrid(const std::vector<std::vector<bool>>& g_grid, const int width, const int height)
 {
 	const int half_w = static_cast<int>(g_grid[0].size()) / 2; // assume all are the same size
 	const int half_h = static_cast<int>(g_grid.size()) / 2;
 
-	std::deque<std::deque<bool>> r{};
+	std::vector<std::vector<bool>> r{};
 
 	for (int i = half_h - (height / 2); i < half_h + (height / 2); ++i)
 	{
-		std::deque<bool> w{};
+		std::vector<bool> w{};
 		for (int j = half_w - (width / 2); j < half_w + (width / 2); ++j)
 		{
 			w.push_back(g_grid[i][j]);
@@ -52,13 +52,13 @@ int main()
 
 	window.setFramerateLimit(10);
 
-	// initalize the grid, using std::deque<bool> instead of std::vector<bool>
-	std::deque<std::deque<bool>> grid(1000, std::deque<bool>(1000, false));
+	int count = 150;
+	std::vector<std::vector<bool>> grid(count, std::vector<bool>(count, false));
 	for (int i = 0; i < 20; ++i)
 	{
 		for (int j = 0; j < 20; ++j)
 		{
-			grid[490 + i][490 + j] = random_bool();
+			grid[count / 2 - 10 + i][count / 2 - 10 + j] = random_bool();
 		}
 	}
 
@@ -69,10 +69,22 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-			if (event.type == sf::Event::Resized)
+			else if (event.type == sf::Event::Resized)
 			{
 				sf::FloatRect visible_area(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height));
 				window.setView(sf::View(visible_area));
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+			{
+				std::vector<std::vector<bool>> new_grid(count, std::vector<bool>(count, false));
+				grid = new_grid;
+				for (int i = 0; i < 20; ++i)
+				{
+					for (int j = 0; j < 20; ++j)
+					{
+						grid[count / 2 - 10 + i][count / 2 - 10 + j] = random_bool();
+					}
+				}
 			}
 		}
 
@@ -96,7 +108,7 @@ int main()
 				bool right_bottom = get_val_or_false(old_grid, yy - 1, xx + 1);
 				bool left_bottom = get_val_or_false(old_grid, yy - 1, xx - 1);
 
-				std::deque<bool> neighbors{ right, left, right_top, top, left_top, bottom, right_bottom, left_bottom };
+				std::vector<bool> neighbors{ right, left, right_top, top, left_top, bottom, right_bottom, left_bottom };
 
 				int num_neighbors = 0;
 				for (auto neighbor : neighbors)
@@ -109,8 +121,6 @@ int main()
 				{
 					if ((num_neighbors < 2) || num_neighbors > 3)
 						grid[yy][xx] = false;
-					else if ((num_neighbors == 2) || (num_neighbors == 3))
-						grid[yy][xx] = true;
 				}
 				else if (num_neighbors == 3)
 					grid[yy][xx] = true;
