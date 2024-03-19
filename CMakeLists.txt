@@ -34,6 +34,8 @@ if(WIN32)
     set_target_properties(GameOfLife PROPERTIES
                           WIN32_EXECUTABLE TRUE)
     target_link_libraries(GameOfLife PRIVATE sfml-main)
+else()
+    include_directories("/usr/include/freetype2/")
 endif()
 
 install(TARGETS GameOfLife)
