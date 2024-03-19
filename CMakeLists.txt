@@ -23,7 +23,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SFML)
 
 add_executable (GameOfLife "src/GameOfLife.cpp" )
-target_link_libraries(GameOfLife PRIVATE sfml-graphics sfml-window sfml-main)
+target_link_libraries(GameOfLife PRIVATE sfml-graphics sfml-window)
 
 if(WIN32)
     add_custom_command(
@@ -33,6 +33,7 @@ if(WIN32)
         VERBATIM)
     set_target_properties(GameOfLife PROPERTIES
                           WIN32_EXECUTABLE TRUE)
+    target_link_libraries(GameOfLife PRIVATE sfml-main)
 endif()
 
 install(TARGETS GameOfLife)
